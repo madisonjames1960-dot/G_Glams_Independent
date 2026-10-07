@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 84 22% 95%;
+    --foreground: 25 10% 15%;
+    --card: 84 18% 97%;
+    --card-foreground: 25 10% 15%;
+    --popover: 84 18% 97%;
+    --popover-foreground: 25 10% 15%;
+    --primary: 102 28% 35%;
+    --primary-foreground: 84 22% 97%;
+    --secondary: 78 20% 89%;
+    --secondary-foreground: 25 10% 15%;
+    --muted: 78 20% 89%;
+    --muted-foreground: 25 8% 38%;
+    --accent: 102 28% 35%;
+    --accent-foreground: 84 22% 97%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 84 22% 97%;
+    --border: 84 14% 86%;
+    --input: 84 14% 86%;
+    --ring: 102 28% 35%;
+    --radius: 0.25rem;
+    --font-heading: "Cormorant Garamond", ui-serif, Georgia, serif;
+    --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .hairline { border-width: 0.5px; }
+  .tracking-luxe { letter-spacing: 0.28em; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}

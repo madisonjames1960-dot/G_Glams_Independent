@@ -1,0 +1,9 @@
+﻿fastapi
+uvicorn[standard]
+sqlalchemy
+pwdlib[argon2]
+PyJWT
+python-multipart
+pydantic[email]
+
+psycopg[binary]
