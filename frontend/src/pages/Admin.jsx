@@ -485,7 +485,7 @@ export default function Admin() {
             <SelectTrigger className="mt-2 w-full border border-sandstone bg-cream p-3">
               <SelectValue placeholder="Select a product" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="item-aligned" className="z-[9999] border border-sandstone bg-white text-coffee shadow-lg">
               {products.map((product) => (
                 <SelectItem key={product.id} value={product.slug}>
                   {product.name}
