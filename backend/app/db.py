@@ -1,13 +1,30 @@
-﻿import os
+﻿
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./g_glams.db")
 
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgres://", "postgresql+psycopg://", 1
+    )
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgresql://", "postgresql+psycopg://", 1
+    )
+
+connect_args = (
+    {"check_same_thread": False}
+    if DATABASE_URL.startswith("sqlite")
+    else {}
+)
+
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False}
+    connect_args=connect_args,
+    pool_pre_ping=True
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -89,6 +106,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-
