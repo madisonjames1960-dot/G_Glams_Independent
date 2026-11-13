@@ -488,7 +488,7 @@ export default function Admin() {
             <SelectContent position="item-aligned" className="z-[9999] border border-sandstone bg-white text-coffee shadow-lg">
               {products.map((product) => (
                 <SelectItem key={product.id} value={product.slug}>
-                  {product.name}
+                  {{ "gentle-gel-cleanser": "Hydrating Gentle Cleanser (100ml)", "brightening-serum": "C-Bright Vitamin C Serum", "hydrating-moisturizer": "Ceramide Barrier Repair Essence", "radiance-body-oil": "Radiance Boost Body Oil", "clarifying-clay-mask": "2% BHA Pore Clarifying Toner", "daily-sunscreen": "Radiance Nourishing Body Butter" }[product.slug] || product.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -534,7 +534,7 @@ export default function Admin() {
                     No image
                   </div>
                 )}
-                <p className="mt-3 font-heading text-xl text-coffee">{product.name}</p>
+                <p className="mt-3 font-heading text-xl text-coffee">{{ "gentle-gel-cleanser": "Hydrating Gentle Cleanser (100ml)", "brightening-serum": "C-Bright Vitamin C Serum", "hydrating-moisturizer": "Ceramide Barrier Repair Essence", "radiance-body-oil": "Radiance Boost Body Oil", "clarifying-clay-mask": "2% BHA Pore Clarifying Toner", "daily-sunscreen": "Radiance Nourishing Body Butter" }[product.slug] || product.name}</p>
               </div>
             );
           })}
