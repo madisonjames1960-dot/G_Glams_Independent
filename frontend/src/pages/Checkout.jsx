@@ -12,9 +12,9 @@ import CartDrawer from "@/components/CartDrawer";
 import PlaceholderImage from "@/components/PlaceholderImage";
 
 const PAYMENTS = [
-  { id: "card", label: "Card (Paystack / Flutterwave)", note: "Pay securely online — integration ready to activate." },
-  { id: "transfer", label: "Bank Transfer", note: "We'll send account details on WhatsApp." },
-  { id: "cod", label: "Cash on Delivery", note: "Pay when your order arrives (select areas)." },
+  { id: "card", label: "Card (Paystack / Flutterwave)", note: "Online card payments will be available once the payment service is activated." },
+  { id: "transfer", label: "Bank Transfer", note: "We'll send the account details to you on WhatsApp." },
+
 ];
 
 export default function Checkout() {
@@ -30,7 +30,7 @@ export default function Checkout() {
     e.preventDefault();
     setPlacing(true);
     const orderPayload = {
-      items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
+      items: items.map((i) => ({ id: i.id, name: i.name, variant: i.variantLabel || null, price: i.price, qty: i.qty })),
       total: hasPriced ? total : null,
       customerName: form.name,
       phone: form.phone,
@@ -42,9 +42,9 @@ export default function Checkout() {
     try {
       await base44.entities.Order.create(orderPayload);
     } catch {
-      // proceed to confirmation even if record save fails — WhatsApp still works
+      // proceed to confirmation even if record save fails; WhatsApp still works
     }
-    const summary = items.map((i) => `- ${i.qty}x ${i.name}${i.price != null ? ` — ${formatNaira(i.price)}` : ""}`).join("\n");
+    const summary = items.map((i) => `${i.qty} x ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}${i.price != null ? `, ${formatNaira(i.price)} each` : ""}`).join("\n");
     const waMsg = `Hi G_Glams Naturals, I'd like to place an order:\n\n${summary}\n\nTotal: ${hasPriced ? formatNaira(total) : "to be confirmed"}\n\nName: ${form.name}\nPhone: ${form.phone}\nAddress: ${orderPayload.address}\nPayment: ${orderPayload.paymentMethod}`;
     window.open(waLink(waMsg), "_blank", "noopener,noreferrer");
     setDone(true);
@@ -58,7 +58,7 @@ export default function Checkout() {
         <CheckCircle2 className="w-14 h-14 text-botanical mb-4" strokeWidth={1.5} />
         <h1 className="font-heading text-4xl text-coffee">Order received</h1>
         <p className="mt-3 text-muted-foreground max-w-md">
-          Thank you, {form.name || "there"}. We've opened WhatsApp with your order details — just hit send and our team will confirm your order, total and delivery.
+          Thank you, {form.name || "there"}. Your order details are ready in WhatsApp. Please send the message so our team can confirm your order, total and delivery.
         </p>
         <div className="mt-7 flex flex-col sm:flex-row gap-3">
           <Link to="/" className="h-12 inline-flex items-center justify-center bg-coffee text-cream px-7 text-[12px] tracking-[0.14em] uppercase hover:bg-ochre transition-colors">
@@ -146,14 +146,15 @@ export default function Checkout() {
                 <h2 className="font-heading text-2xl text-coffee mb-4">Your order</h2>
                 <div className="space-y-3 max-h-72 overflow-y-auto">
                   {items.map((i) => (
-                    <div key={i.id} className="flex gap-3">
+                    <div key={i.cartKey || i.id} className="flex gap-3">
                       <PlaceholderImage src={i.image} label="" aspect="aspect-square w-14" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-coffee leading-tight truncate">{i.name}</p>
                         <p className="text-xs text-muted-foreground">Qty {i.qty}</p>
+                        {i.variantLabel && <p className="text-xs text-muted-foreground">{i.variantLabel}</p>}
                       </div>
                       <p className="text-sm text-coffee whitespace-nowrap">
-                        {i.price != null && !Number.isNaN(Number(i.price)) ? formatNaira(Number(i.price) * i.qty) : "—"}
+                        {i.price != null && !Number.isNaN(Number(i.price)) ? formatNaira(Number(i.price) * i.qty) : "Not yet priced"}
                       </p>
                     </div>
                   ))}
@@ -162,16 +163,16 @@ export default function Checkout() {
                   <span className="text-sm text-muted-foreground">Subtotal</span>
                   <span className="font-heading text-2xl text-coffee">{hasPriced ? formatNaira(total) : "On enquiry"}</span>
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">Delivery fee confirmed with your order.</p>
+                <p className="mt-2 text-xs text-muted-foreground">We'll confirm the delivery fee with you when we process your order.</p>
                 <button
                   type="submit"
                   disabled={placing}
                   className="mt-5 w-full h-12 bg-coffee text-cream text-[12px] tracking-[0.14em] uppercase hover:bg-ochre transition-colors disabled:opacity-50"
                 >
-                  {placing ? "Placing order…" : "Place Order"}
+                  {placing ? "Placing your order..." : "Place Order"}
                 </button>
                 <p className="mt-3 text-xs text-center text-muted-foreground">
-                  Your order will be sent to us on WhatsApp for quick confirmation.
+                  Your order details will be sent to us on WhatsApp so we can confirm everything with you.
                 </p>
               </div>
             </aside>

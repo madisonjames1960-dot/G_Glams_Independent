@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+﻿import React, { createContext, useState, useContext, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 
 const AuthContext = createContext();
@@ -38,7 +38,10 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
 
-      if (error.status === 401 || error.status === 403) {
+      if (
+        (error.status === 401 || error.status === 403) &&
+        window.location.pathname !== "/admin"
+      ) {
         setAuthError({
           type: "auth_required",
           message: "Authentication required",
@@ -60,18 +63,22 @@ export const AuthProvider = ({ children }) => {
     checkAppState();
   }, []);
 
+
   const logout = (shouldRedirect = true) => {
     base44.auth.logout();
     setUser(null);
     setIsAuthenticated(false);
 
     if (shouldRedirect) {
-      window.location.href = "/";
+      window.location.href = "/login";
     }
   };
 
   const navigateToLogin = () => {
-    window.location.href = "/login";
+    const returnTo = window.location.pathname === "/admin"
+      ? "?returnTo=%2Fadmin"
+      : "";
+    window.location.href = `/login${returnTo}`;
   };
 
   return (
@@ -104,3 +111,4 @@ export const useAuth = () => {
 
   return context;
 };
+

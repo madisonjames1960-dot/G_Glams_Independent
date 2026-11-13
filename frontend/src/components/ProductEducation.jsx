@@ -3,11 +3,11 @@ import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 
 const PILLARS = [
-  { icon: Leaf, title: "Ingredients with purpose", desc: "We choose ingredients for a reason — and list them clearly so you always know what's on your skin." },
-  { icon: Droplets, title: "What each product does", desc: "Every product has a clear purpose, so you can build a routine that actually fits your skin." },
-  { icon: HandHeart, title: "How to use it", desc: "Simple, realistic directions — morning and night — that fit into a busy Nigerian lifestyle." },
-  { icon: Users, title: "Who it's for", desc: "We tell you who each product suits, and who should check with us first before buying." },
-  { icon: Clock, title: "Realistic expectations", desc: "Skincare takes time. We share honest timelines — not overnight promises." },
+  { icon: Leaf, title: "Ingredients with purpose", desc: "We choose our ingredients carefully and list them clearly, so you know what you're putting on your skin." },
+  { icon: Droplets, title: "What each product does", desc: "Every product has a clear purpose, making it easier to choose what belongs in your routine." },
+  { icon: HandHeart, title: "How to use it", desc: "We provide clear directions for using each product in your morning or evening routine." },
+  { icon: Users, title: "Who it's for", desc: "We explain who each product is intended for and when you may need to ask us for advice first." },
+  { icon: Clock, title: "Realistic expectations", desc: "Good skincare takes time. We'll always be honest about what to expect." },
 ];
 
 export default function ProductEducation() {
@@ -18,7 +18,7 @@ export default function ProductEducation() {
           light
           eyebrow="Why Trust Us"
           title="Skincare you can understand"
-          intro="We believe in responsible skincare — clear ingredients, honest directions, and realistic expectations."
+          intro="We believe you should know what you're using, how to use it and what to expect."
         />
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream/10">
           {PILLARS.map((p, i) => (
@@ -33,7 +33,7 @@ export default function ProductEducation() {
           <Reveal delay={0.25}>
             <div className="bg-ochre p-7 sm:p-8 h-full flex flex-col justify-center">
               <p className="font-heading text-2xl text-cream leading-snug">
-                We don't promise miracles. We promise skincare made with care.
+                We don't promise miracles. We make skincare with care.
               </p>
             </div>
           </Reveal>

@@ -7,3 +7,6 @@ python-multipart
 pydantic[email]
 
 psycopg[binary]
+
+cloudinary
+python-dotenv

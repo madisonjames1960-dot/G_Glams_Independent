@@ -1,9 +1,22 @@
-import { Link } from "react-router-dom";
+﻿import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import { waLink } from "@/lib/siteConfig";
+import { API_URL } from "@/api/api";
 
 export default function Hero() {
+  const [heroImage, setHeroImage] = useState("");
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/site-content/hero-image`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Could not load Hero image.");
+        return response.json();
+      })
+      .then((data) => setHeroImage(data.image_url || ""))
+      .catch(() => setHeroImage(""));
+  }, []);
+
   return (
     <section className="relative pt-24 sm:pt-28 pb-10 sm:pb-16 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -15,7 +28,7 @@ export default function Hero() {
             Skincare that helps your skin look and feel its best.
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-md animate-fade-up" style={{ animationDelay: "0.08s" }}>
-            Thoughtfully made skincare for healthy-looking, radiant skin — created for real people and real routines.
+            Thoughtful skincare for healthy-looking, radiant skin. Made for real people and everyday routines.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: "0.16s" }}>
             <a
@@ -41,7 +54,8 @@ export default function Hero() {
 
         <div className="order-1 md:order-2 animate-fade-up" style={{ animationDelay: "0.12s" }}>
           <PlaceholderImage
-            label="[UPLOAD REAL HERO IMAGE — PRODUCT COMPOSITION OR LIFESTYLE PHOTO]"
+            src={heroImage}
+            label="[UPLOAD REAL HERO IMAGE - PRODUCT COMPOSITION OR LIFESTYLE PHOTO]"
             aspect="aspect-[4/5] sm:aspect-[3/4]"
             className="rounded-sm shadow-xl shadow-coffee/5"
           />
@@ -50,3 +64,4 @@ export default function Hero() {
     </section>
   );
 }
+

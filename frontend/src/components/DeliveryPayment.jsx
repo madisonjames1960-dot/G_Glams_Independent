@@ -6,25 +6,25 @@ const BLOCKS = [
   {
     icon: Truck,
     title: "Delivery across Nigeria",
-    body: "We deliver across Nigeria. Delivery timelines and fees vary by location and will be confirmed before your order is dispatched.",
+    body: "We deliver across Nigeria. Delivery times and fees depend on your location. We'll confirm them with you before dispatch.",
     meta: "",
   },
   {
     icon: CreditCard,
     title: "Secure payment",
-    body: "Pay securely in Nigerian Naira. Available payment options will be confirmed when you place your order.",
+    body: "Pay in Nigerian Naira using the available payment options. We'll confirm the details when you place your order.",
     meta: "",
   },
   {
     icon: ShieldCheck,
     title: "Order confirmation",
-    body: "You'll receive a confirmation by WhatsApp or email once your order is placed and again when it's dispatched.",
-    meta: "Need help with an order? Message us on WhatsApp.",
+    body: "We'll confirm your order by WhatsApp or email. We'll also let you know when it has been dispatched.",
+    meta: "Need help with an order? Send us a message on WhatsApp.",
   },
   {
     icon: RefreshCw,
     title: "Returns & refunds",
-    body: "If there is an issue with your product or order, please contact us as soon as possible through WhatsApp so we can assist you.",
+    body: "Having a problem with your product or order? Please contact us on WhatsApp as soon as possible so we can help.",
     meta: "",
   },
 ];
@@ -36,7 +36,7 @@ export default function DeliveryPayment() {
         <SectionHeading
           eyebrow="Before You Order"
           title="Delivery & Payment"
-          intro="Everything you need to order with confidence — in Naira."
+          intro="Here's what to know about delivery and payment before you shop."
         />
         <div className="mt-10 grid sm:grid-cols-2 gap-4 sm:gap-6">
           {BLOCKS.map((b, i) => (

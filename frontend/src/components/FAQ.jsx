@@ -6,27 +6,27 @@ import Reveal from "@/components/Reveal";
 const FAQS = [
   {
     q: "How do I know which product is right for my skin?",
-    a: "Use our 'Build Your Skincare Routine' tool, browse by skin concern, or message us on WhatsApp — we'll help you choose based on your skin type and goals.",
+    a: "Try our 'Build Your Skincare Routine' tool, browse products by skin concern, or send us a message on WhatsApp. We'll be happy to help you choose based on your skin type and needs.",
   },
   {
     q: "How long before I see results?",
-    a: "Results vary depending on your skin and the product you use. Consistent use as directed is important, and visible improvements may take time.",
+    a: "This depends on your skin and the product you're using. Follow the directions and give your routine time. Visible changes don't happen overnight, and results can vary from person to person.",
   },
   {
     q: "Do you deliver across Nigeria?",
-    a: "Yes. We deliver across Nigeria. Delivery timelines and fees vary by location and will be confirmed before your order is dispatched.",
+    a: "Yes, we deliver across Nigeria. Delivery times and fees depend on your location. We'll confirm them with you before dispatch.",
   },
   {
     q: "What payment methods do you accept?",
-    a: "Available payment options will be confirmed when you place your order. All payments are made securely in Nigerian Naira.",
+    a: "You can select Card or Bank Transfer at checkout. Online card processing will be available once the payment service is activated. For bank transfer, we'll share the account details with you on WhatsApp. All payments are made in Nigerian Naira.",
   },
   {
     q: "Can I return a product?",
-    a: "If there is an issue with your product or order, please contact us as soon as possible through WhatsApp so we can assist you.",
+    a: "If something is wrong with your product or order, please contact us on WhatsApp as soon as possible so we can help.",
   },
   {
     q: "Are your products suitable for sensitive skin?",
-    a: "Our products are made for real skincare routines. If you have sensitive skin or a specific concern, please message us on WhatsApp before purchasing.",
+    a: "If your skin is sensitive or you have a particular skin concern, please speak with us on WhatsApp before ordering. We can help you check whether a product may be suitable for you.",
   },
 ];
 
@@ -39,7 +39,7 @@ export default function FAQ() {
         <SectionHeading
           eyebrow="Good To Know"
           title="Frequently Asked Questions"
-          intro="Quick answers before you order."
+          intro="A few things you may want to know before ordering."
         />
 
         <div className="mt-10 divide-y hairline divide-ochre/15 border-y hairline border-ochre/15">

@@ -6,6 +6,7 @@ import { formatNaira } from "@/lib/format";
 import { waLink } from "@/lib/siteConfig";
 
 const TAG_STYLES = {
+  FEATURED: "bg-ochre text-cream",
   BESTSELLER: "bg-coffee text-cream",
   NEW: "bg-botanical text-cream",
   "CUSTOMER FAVORITE": "bg-ochre text-cream",
@@ -14,11 +15,26 @@ const TAG_STYLES = {
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const navigate = useNavigate();
-  const price = formatNaira(product.price);
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+  const lowestPrice = hasVariants
+    ? Math.min(...product.variants.map((v) => Number(v.price)))
+    : product.price;
+  const price = formatNaira(lowestPrice);
   const tags = (product.tags || []).slice(0, 1);
+
+  const goToProduct = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/product/${product.slug}`);
+  };
 
   const buyNow = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    if (hasVariants) {
+      navigate(`/product/${product.slug}`);
+      return;
+    }
     addItem(product, 1);
     navigate("/checkout");
   };
@@ -26,6 +42,10 @@ export default function ProductCard({ product }) {
   const addToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (hasVariants) {
+      navigate(`/product/${product.slug}`);
+      return;
+    }
     addItem(product, 1);
   };
 
@@ -66,7 +86,9 @@ export default function ProductCard({ product }) {
 
         <div className="mt-3 flex items-baseline gap-2">
           {price ? (
-            <span className="font-heading text-2xl text-coffee">{price}</span>
+            <span className="font-heading text-2xl text-coffee">
+              {hasVariants ? `From ${price}` : price}
+            </span>
           ) : (
             <span className="text-sm tracking-[0.1em] uppercase text-ochre">Price on enquiry</span>
           )}
@@ -77,14 +99,14 @@ export default function ProductCard({ product }) {
             onClick={addToCart}
             className="w-full h-11 inline-flex items-center justify-center gap-2 bg-coffee text-cream text-[11px] tracking-[0.14em] uppercase hover:bg-ochre transition-colors"
           >
-            <ShoppingBag className="w-4 h-4" /> Add to Cart
+            <ShoppingBag className="w-4 h-4" /> {hasVariants ? "Choose Size" : "Add to Cart"}
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={buyNow}
               className="h-10 border hairline border-ochre/40 text-coffee text-[11px] tracking-[0.14em] uppercase hover:bg-sandstone transition-colors"
             >
-              Buy Now
+              {hasVariants ? "Select Size" : "Buy Now"}
             </button>
             <a
               href={waLink(`Hi G_Glams Naturals, I'm interested in ${product.name}.`)}

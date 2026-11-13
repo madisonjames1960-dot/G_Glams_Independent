@@ -1,12 +1,18 @@
+﻿from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.admin_auth import router as admin_auth_router
 from app.api.auth import router as auth_router
 from app.api.products import router as products_router
 from app.api.reviews import router as reviews_router
 from app.api.orders import router as orders_router
 from app.api.uploads import router as uploads_router
+from app.api.site_content import router as site_content_router
 from app.db import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -30,11 +36,13 @@ app.add_middleware(
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+app.include_router(admin_auth_router)
 app.include_router(auth_router)
 app.include_router(products_router)
 app.include_router(reviews_router)
 app.include_router(orders_router)
 app.include_router(uploads_router)
+app.include_router(site_content_router)
 
 
 @app.get("/")
@@ -51,4 +59,7 @@ def health():
         "status": "healthy",
         "environment": "development",
     }
+
+
+
 

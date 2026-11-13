@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+﻿from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from app.db import get_db, Product
+from app.admin_auth import require_admin
 import json
 
 router = APIRouter(prefix="/api/products", tags=["Products"])
@@ -53,6 +54,7 @@ def update_product_image(
     slug: str,
     data: ImageUpdate,
     db: Session = Depends(get_db),
+    admin=Depends(require_admin),
 ):
     product = db.query(Product).filter(Product.slug == slug).first()
 
@@ -74,3 +76,5 @@ def get_product(slug: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Product not found.")
 
     return product_response(product)
+
+

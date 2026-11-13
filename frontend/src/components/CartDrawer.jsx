@@ -42,7 +42,7 @@ export default function CartDrawer() {
           <>
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
               {items.map((i) => (
-                <div key={i.id} className="flex gap-3">
+                <div key={i.cartKey || i.id} className="flex gap-3">
                   <Link to={`/product/${i.slug}`} onClick={closeCart} className="shrink-0">
                     <PlaceholderImage src={i.image} label="" aspect="aspect-square w-20" />
                   </Link>
@@ -51,21 +51,24 @@ export default function CartDrawer() {
                       {i.name}
                     </Link>
                     {i.price != null && !Number.isNaN(Number(i.price)) ? (
-                      <p className="text-sm text-muted-foreground mt-0.5">{formatNaira(i.price)}</p>
+                      <>
+                        <p className="text-sm text-muted-foreground mt-0.5">{formatNaira(i.price)}</p>
+                        {i.variantLabel && <p className="text-xs text-muted-foreground">{i.variantLabel}</p>}
+                      </>
                     ) : (
                       <p className="text-xs text-ochre mt-0.5 tracking-wide uppercase">Price on enquiry</p>
                     )}
                     <div className="mt-2 flex items-center gap-3">
                       <div className="inline-flex items-center border hairline border-ochre/30">
-                        <button onClick={() => updateQty(i.id, i.qty - 1)} aria-label="Decrease" className="w-8 h-8 flex items-center justify-center text-coffee hover:bg-sandstone">
+                        <button onClick={() => updateQty(i.cartKey || i.id, i.qty - 1)} aria-label="Decrease" className="w-8 h-8 flex items-center justify-center text-coffee hover:bg-sandstone">
                           <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="w-8 text-center text-sm text-coffee">{i.qty}</span>
-                        <button onClick={() => updateQty(i.id, i.qty + 1)} aria-label="Increase" className="w-8 h-8 flex items-center justify-center text-coffee hover:bg-sandstone">
+                        <button onClick={() => updateQty(i.cartKey || i.id, i.qty + 1)} aria-label="Increase" className="w-8 h-8 flex items-center justify-center text-coffee hover:bg-sandstone">
                           <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      <button onClick={() => removeItem(i.id)} aria-label="Remove" className="text-muted-foreground hover:text-destructive">
+                      <button onClick={() => removeItem(i.cartKey || i.id)} aria-label="Remove" className="text-muted-foreground hover:text-destructive">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -92,7 +95,7 @@ export default function CartDrawer() {
                 Checkout
               </Link>
               <a
-                href={waLink(`Hi G_Glams Naturals, I'd like to order: ${items.map((i) => `${i.qty}x ${i.name}`).join(", ")}.`)}
+                href={waLink(`Hi G_Glams Naturals, I'd like to order: ${items.map((i) => `${i.qty}x ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}${i.price != null ? ` - ${formatNaira(i.price)} each` : ""}`).join(", ")}.`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-12 inline-flex items-center justify-center gap-2 border hairline border-ochre/40 text-coffee text-[12px] tracking-[0.14em] uppercase hover:bg-sandstone transition-colors"

@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -40,7 +40,8 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* Add your page Route elements here */}
-      <Route path="/" element={<Home />} />`r`n      <Route path="/login" element={<Login />} />`r`n      <Route path="/register" element={<Register />} />`r`n      <Route path="/forgot-password" element={<ForgotPassword />} />`r`n      <Route path="/reset-password" element={<ResetPassword />} />`r`n      <Route path="/oauth-consent" element={<OAuthConsent />} />
+      <Route path="/" element={<Home />} />`r`n      <Route path="/login" element={<Login />} />`r`n      `r`n      <Route path="/forgot-password" element={<ForgotPassword />} />`r`n      <Route path="/reset-password" element={<ResetPassword />} />`r`n      <Route path="/oauth-consent" element={<OAuthConsent />} />
+      <Route path="/register" element={<Navigate to="/" replace />} />
       <Route path="/product/:slug" element={<ProductDetail />} />
       <Route path="/checkout" element={<Checkout />} />`r`n      <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<PageNotFound />} />
@@ -68,7 +69,7 @@ function App() {
 
 export default App
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import OAuthConsent from "./pages/OAuthConsent";

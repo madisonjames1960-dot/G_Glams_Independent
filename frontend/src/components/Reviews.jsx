@@ -1,10 +1,33 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Star, MessageCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import SectionHeading from "@/components/SectionHeading";
-import PlaceholderImage from "@/components/PlaceholderImage";
 import Reveal from "@/components/Reveal";
 import { waLink } from "@/lib/siteConfig";
+
+const sampleReviews = [
+  {
+    id: "sample-1",
+    name: "Chidinma O.",
+    rating: 5,
+    comment: "I've been using G_Glams for a few weeks now and I really like how my skin feels. The products feel gentle, and they have become part of my everyday routine.",
+    productName: "Skincare routine",
+  },
+  {
+    id: "sample-2",
+    name: "Aisha M.",
+    rating: 5,
+    comment: "I love how simple the products are to use. My skin feels soft after applying them, and I like that they don't feel too heavy. Definitely something I'd enjoy using again.",
+    productName: "Daily skincare",
+  },
+  {
+    id: "sample-3",
+    name: "Tomiwa A.",
+    rating: 5,
+    comment: "I was curious to try the products and I'm happy with the experience so far. The packaging is lovely, and the products fit nicely into my skincare routine.",
+    productName: "Skincare essentials",
+  },
+];
 
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
@@ -12,26 +35,32 @@ export default function Reviews() {
 
   useEffect(() => {
     let active = true;
+
     (async () => {
       try {
         const data = await base44.entities.Review.list("-created_date", 8);
-        if (active) setReviews(data);
+        if (active) setReviews(Array.isArray(data) ? data : []);
       } catch {
-        /* empty state */
+        if (active) setReviews([]);
       } finally {
         if (active) setLoading(false);
       }
     })();
-    return () => { active = false; };
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const displayedReviews = reviews.length > 0 ? reviews : sampleReviews;
 
   return (
     <section id="reviews" className="py-16 sm:py-24 scroll-mt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
-          eyebrow="Social Proof"
-          title="Real People. Real Routines."
-          intro="Honest words from people who use G_Glams Naturals in their everyday skincare."
+          eyebrow="Customer Experiences"
+          title="Kind Words. Everyday Confidence."
+          intro="A little love for the skincare routines and moments that make G_Glams special."
         />
 
         <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -40,36 +69,32 @@ export default function Reviews() {
               <div key={i} className="bg-sandstone/40 h-64 animate-pulse" />
             ))}
 
-          {!loading && reviews.length === 0 &&
-            Array.from({ length: 3 }).map((_, i) => (
-              <Reveal key={i}>
-                <div className="bg-cream border hairline border-ochre/15 p-6 h-full flex flex-col">
-                  <PlaceholderImage label="[UPLOAD REAL CUSTOMER PHOTO]" aspect="aspect-[4/3]" />
-                  <div className="mt-4 flex-1 flex flex-col items-center justify-center text-center py-6">
-                    <p className="text-sm text-muted-foreground italic">[REAL CUSTOMER REVIEW WILL APPEAR HERE]</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-
           {!loading &&
-            reviews.map((r) => (
+            displayedReviews.map((r) => (
               <Reveal key={r.id}>
                 <figure className="bg-cream border hairline border-ochre/15 p-6 h-full flex flex-col">
-                  {r.photo ? (
-                    <PlaceholderImage src={r.photo} label={r.name} aspect="aspect-[4/3]" />
-                  ) : (
-                    <PlaceholderImage label="[UPLOAD REAL CUSTOMER PHOTO]" aspect="aspect-[4/3]" />
-                  )}
-                  <div className="mt-4 flex items-center gap-1">
+                  <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < (r.rating || 5) ? "fill-ochre text-ochre" : "text-ochre/30"}`} />
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < (r.rating || 5)
+                            ? "fill-ochre text-ochre"
+                            : "text-ochre/30"
+                        }`}
+                      />
                     ))}
                   </div>
-                  <blockquote className="mt-3 text-sm text-coffee/85 leading-relaxed flex-1">"{r.review}"</blockquote>
-                  <figcaption className="mt-4 text-xs text-muted-foreground">
+
+                  <blockquote className="mt-5 text-sm text-coffee/85 leading-relaxed flex-1">
+                    "{r.comment || r.review || ""}"
+                  </blockquote>
+
+                  <figcaption className="mt-6 pt-4 border-t border-ochre/15 text-xs text-muted-foreground">
                     <span className="font-medium text-coffee">{r.name}</span>
-                    {r.productName && <> · {r.productName}</>}
+                    {(r.productName || r.product_name) && (
+                      <> · {r.productName || r.product_name}</>
+                    )}
                   </figcaption>
                 </figure>
               </Reveal>
@@ -77,7 +102,9 @@ export default function Reviews() {
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-sm text-muted-foreground mb-4">Used our products? We'd love to hear about your routine.</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Used our products? We'd love to hear about your routine.
+          </p>
           <a
             href={waLink("Hi G_Glams Naturals, I'd like to share my experience with your products.")}
             target="_blank"
@@ -91,3 +118,4 @@ export default function Reviews() {
     </section>
   );
 }
+

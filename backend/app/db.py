@@ -1,4 +1,4 @@
-import os
+﻿import os
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
@@ -72,6 +72,14 @@ class Order(Base):
     user = relationship("User")
 
 
+class SiteSetting(Base):
+    __tablename__ = "site_settings"
+
+    key = Column(String, primary_key=True)
+    value = Column(Text, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 Base.metadata.create_all(bind=engine)
 
 
@@ -81,5 +89,6 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 

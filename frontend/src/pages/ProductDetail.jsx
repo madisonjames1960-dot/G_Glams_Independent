@@ -22,13 +22,133 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import CartDrawer from "@/components/CartDrawer";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import ProductCard from "@/components/ProductCard";
+import { FALLBACK_PRODUCTS, normalizeProduct } from "@/components/Bestsellers";
 import Reveal from "@/components/Reveal";
 
-const PRODUCT_FAQS = [
-  { q: "How do I use this in my routine?", a: "[INSERT BRAND-VERIFIED USAGE GUIDANCE]" },
-  { q: "Can I use this with my other products?", a: "[INSERT ROUTINE COMPATIBILITY GUIDANCE]" },
-  { q: "When will I see results?", a: "[INSERT REALISTIC, VERIFIED TIMELINE]" },
-];
+
+function getProductFaqs(product) {
+  const faqs = {
+    "gentle-gel-cleanser": [
+      {
+        q: "What makes the Hydrating Gentle Cleanser special?",
+        a: "It contains ceramides, sodium hyaluronate, aloe vera and green tea extract. It is designed to cleanse without leaving the skin feeling tight.",
+      },
+      {
+        q: "Is it suitable for all skin types?",
+        a: "Yes. The Hydrating Gentle Cleanser is suitable for all skin types.",
+      },
+      {
+        q: "What sizes are available?",
+        a: "The cleanser is available in 100ml and 50ml sizes. The 100ml size is our featured option.",
+      },
+      {
+        q: "How should I use the cleanser?",
+        a: "Follow the usage directions on the product packaging. If you need help fitting it into your skincare routine, contact us on WhatsApp.",
+      },
+    ],
+    "brightening-serum": [
+      {
+        q: "What are the key ingredients?",
+        a: "C-Bright Vitamin C Serum contains 3-O-Ethyl Ascorbic Acid, Ferulic Acid and Sodium Hyaluronate.",
+      },
+      {
+        q: "What does this serum help with?",
+        a: "It is an antioxidant serum designed to help improve the appearance of dullness and uneven skin tone.",
+      },
+      {
+        q: "What sizes are available?",
+        a: "It is available in 15ml for ?6,600 and 30ml for ?13,200. Select your preferred size before adding it to your cart.",
+      },
+      {
+        q: "How should I use it?",
+        a: "Follow the directions on the product packaging. Contact us on WhatsApp if you would like help fitting it into your routine.",
+      },
+    ],
+    "hydrating-moisturizer": [
+      {
+        q: "What are the key ingredients?",
+        a: "The Ceramide Barrier Repair Essence contains ceramides, sodium hyaluronate and snail filtrate.",
+      },
+      {
+        q: "What does this essence do?",
+        a: "It helps support the skin's moisture barrier and maintain comfortable hydration.",
+      },
+      {
+        q: "Who may find it useful?",
+        a: "It is intended for people looking to support their skin's moisture barrier. Contact us if you need help choosing products for your skin.",
+      },
+      {
+        q: "How should I use it in my routine?",
+        a: "Follow the directions on the product packaging. You can contact us on WhatsApp for routine guidance.",
+      },
+    ],
+    "clarifying-clay-mask": [
+      {
+        q: "What are the key ingredients?",
+        a: "The 2% BHA Pore Clarifying Toner contains 2% Salicylic Acid, Witch Hazel and Willow Bark Extract.",
+      },
+      {
+        q: "What does 2% BHA help with?",
+        a: "Salicylic Acid is a beta hydroxy acid that helps address pore buildup and the appearance of uneven skin texture.",
+      },
+      {
+        q: "Who is this toner intended for?",
+        a: "It is particularly suited to oily and blemish-prone skin. If you are unsure whether it suits your skin, contact us before ordering.",
+      },
+      {
+        q: "How often should I use it?",
+        a: "Follow the usage directions on the product packaging. Avoid using it more often than directed, and contact us if you need routine guidance.",
+      },
+    ],
+    "daily-sunscreen": [
+      {
+        q: "What are the key ingredients?",
+        a: "Radiance Nourishing Body Butter contains beta glucan, vitamin E, almond butter and hyaluronic acid.",
+      },
+      {
+        q: "What does this body butter do?",
+        a: "It is a rich moisturiser that helps soften dry skin and maintain lasting hydration.",
+      },
+      {
+        q: "How should I use it?",
+        a: "Apply according to the directions on the product packaging. Contact us on WhatsApp if you need help.",
+      },
+      {
+        q: "Is it suitable for my skin?",
+        a: "It is designed to moisturise and soften dry skin. If you have a particular skin concern, contact us before ordering.",
+      },
+    ],
+    "radiance-body-oil": [
+      {
+        q: "What are the key ingredients?",
+        a: "It contains olive squalene, lemon bioferment, rosehip oil, kojic acid, evening primrose oil, and vitamins E and D.",
+      },
+      {
+        q: "What does this body oil do?",
+        a: "It nourishes and moisturises the skin while enhancing its natural-looking radiance.",
+      },
+      {
+        q: "What sizes are available?",
+        a: "It is available in 50ml for ?8,000 and 100ml for ?16,000. Select your preferred size before adding it to your cart.",
+      },
+      {
+        q: "How should I use it?",
+        a: "Follow the directions on the product packaging. Contact us on WhatsApp if you would like help with your body-care routine.",
+      },
+    ],
+  };
+
+  return faqs[product?.slug] || [
+    {
+      q: "How should I use this product?",
+      a: "Follow the directions provided on the product packaging. Contact us on WhatsApp if you need help with your routine.",
+    },
+    {
+      q: "Is this product suitable for my skin?",
+      a: "Check the product information on this page. If you have sensitive skin or a particular skin concern, contact us before ordering.",
+    },
+  ];
+}
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -37,6 +157,7 @@ export default function ProductDetail() {
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openFaq, setOpenFaq] = useState(-1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -44,9 +165,11 @@ export default function ProductDetail() {
       setLoading(true);
       try {
         const list = await base44.entities.Product.filter({ slug }, "-created_date", 1);
-        const p = list && list[0];
+        const p = (Array.isArray(list) && list[0]) || FALLBACK_PRODUCTS.find((item) => item.slug === slug);
         if (!active) return;
-        setProduct(p || null);
+        const normalized = normalizeProduct(p) || null;
+        setProduct(normalized);
+        setSelectedVariant(normalized?.variants?.[0] || null);
         if (p && (p.skinConcerns || []).length) {
           const all = await base44.entities.Product.list("-created_date", 20);
           if (!active) return;
@@ -55,7 +178,11 @@ export default function ProductDetail() {
           );
         }
       } catch {
-        if (active) setProduct(null);
+        if (active) {
+          const fallback = normalizeProduct(FALLBACK_PRODUCTS.find((item) => item.slug === slug)) || null;
+          setProduct(fallback);
+          setSelectedVariant(fallback?.variants?.[0] || null);
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -80,14 +207,16 @@ export default function ProductDetail() {
     );
   }
 
-  const price = formatNaira(product.price);
+  const currentPrice = selectedVariant?.price ?? product.price;
+  const price = formatNaira(currentPrice);
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
   const inStock = product.stock == null || product.stock > 0;
 
   const addToCart = () => {
-    addItem(product, 1);
+    addItem(product, 1, selectedVariant);
   };
   const buyNow = () => {
-    addItem(product, 1);
+    addItem(product, 1, selectedVariant);
     window.location.href = "/checkout";
   };
 
@@ -160,6 +289,25 @@ export default function ProductDetail() {
                   <span className="text-sm tracking-[0.1em] uppercase text-ochre">Price on enquiry</span>
                 )}
               </div>
+              {hasVariants && (
+                <div className="mt-5">
+                  <label htmlFor="product-size" className="block text-xs tracking-[0.12em] uppercase text-coffee mb-2">
+                    Choose size
+                  </label>
+                  <select
+                    id="product-size"
+                    value={selectedVariant?.id || ""}
+                    onChange={(e) => setSelectedVariant(product.variants.find((v) => v.id === e.target.value) || null)}
+                    className="w-full h-12 px-4 bg-cream border hairline border-ochre/30 text-coffee outline-none focus:border-ochre"
+                  >
+                    {product.variants.map((variant) => (
+                      <option key={variant.id} value={variant.id}>
+                        {variant.label} ? {formatNaira(variant.price)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {product.description && (
                 <p className="mt-5 text-muted-foreground leading-relaxed">{product.description}</p>
@@ -198,17 +346,17 @@ export default function ProductDetail() {
               </div>
 
               <div className="mt-8">
-                <Info icon={Leaf} title="Ingredients" body={product.ingredients || "[INSERT FULL INGREDIENT LIST]"} />
-                <Info icon={HandHeart} title="How to use" body={product.howToUse || "[INSERT HOW-TO-USE GUIDANCE]"} />
-                <Info icon={Users} title="Who it's for" body={product.whoFor || "[INSERT WHO THIS PRODUCT IS FOR]"} />
-                <Info icon={Clock} title="Realistic timeline" body={product.timeline || "[INSERT VERIFIED, REALISTIC RESULTS TIMELINE]"} />
+                {product.ingredients && <Info icon={Leaf} title="Ingredients" body={product.ingredients} />}
+                {product.howToUse && <Info icon={HandHeart} title="How to use" body={product.howToUse} />}
+                {product.whoFor && <Info icon={Users} title="Who it's for" body={product.whoFor} />}
+                {product.timeline && <Info icon={Clock} title="Realistic timeline" body={product.timeline} />}
                 {product.routine && <Info icon={ShoppingBag} title="Routine compatibility" body={product.routine} />}
               </div>
 
               <div className="mt-8 border-t hairline border-ochre/15 pt-6">
                 <h3 className="font-heading text-2xl text-coffee mb-4">Product FAQ</h3>
                 <div className="divide-y hairline divide-ochre/15">
-                  {PRODUCT_FAQS.map((f, i) => (
+                  {getProductFaqs(product).map((f, i) => (
                     <div key={i}>
                       <button
                         onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
@@ -245,6 +393,7 @@ export default function ProductDetail() {
         <div className="min-w-0">
           <p className="text-[10px] tracking-wide uppercase text-muted-foreground truncate">{product.name}</p>
           <p className="font-heading text-xl text-coffee leading-none">{price || "On enquiry"}</p>
+          {selectedVariant?.label && <p className="text-[10px] text-muted-foreground">{selectedVariant.label}</p>}
         </div>
         <button
           onClick={addToCart}
