@@ -1,6 +1,13 @@
 
 import { useEffect, useState } from "react";
 import { API_URL } from "@/api/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Admin() {
   const [token, setToken] = useState(() => sessionStorage.getItem("gg_admin_token") || "");
@@ -474,16 +481,18 @@ export default function Admin() {
           <h2 className="font-heading text-2xl text-coffee">Product Image Management</h2>
 
           <label className="mt-6 block text-xs uppercase tracking-widest text-coffee">Product</label>
-          <select
-            value={selected}
-            onChange={(event) => setSelected(event.target.value)}
-            className="mt-2 w-full border border-sandstone bg-cream p-3"
-          >
-            <option value="">Select a product</option>
-            {products.map((product) => (
-              <option key={product.id} value={product.slug}>{product.name}</option>
-            ))}
-          </select>
+          <Select value={selected} onValueChange={setSelected}>
+            <SelectTrigger className="mt-2 w-full border border-sandstone bg-cream p-3">
+              <SelectValue placeholder="Select a product" />
+            </SelectTrigger>
+            <SelectContent>
+              {products.map((product) => (
+                <SelectItem key={product.id} value={product.slug}>
+                  {product.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <label className="mt-6 block text-xs uppercase tracking-widest text-coffee">Product Image</label>
           <input
