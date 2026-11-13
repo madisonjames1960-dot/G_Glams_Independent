@@ -6,7 +6,7 @@ export default function PlaceholderImage({
   label = "[UPLOAD REAL IMAGE]",
   aspect = "aspect-[4/5]",
   className = "",
-  fittingType = "fill",
+  fittingType = "fit",
 }) {
   const imageSrc = src
     ? src.startsWith("http")
@@ -20,8 +20,8 @@ export default function PlaceholderImage({
         <Image
           src={imageSrc}
           alt={label}
-          className="w-full h-full object-cover"
-          fittingType={fittingType}
+          className="w-full h-full object-contain"
+          fittingType="fit"
         />
       </div>
     );
