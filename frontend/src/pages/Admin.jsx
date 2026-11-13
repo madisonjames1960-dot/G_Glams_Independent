@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+
+import { useEffect, useState } from "react";
 import { API_URL } from "@/api/api";
 
 export default function Admin() {
@@ -376,7 +377,7 @@ export default function Admin() {
             <img
               src={heroImage}
               alt="Current homepage Hero image"
-              className="mt-5 aspect-[4/5] max-h-80 w-auto object-cover"
+              className="mt-5 max-w-full h-auto object-contain"
             />
           )}
 
@@ -398,6 +399,7 @@ export default function Admin() {
             {loading ? "Please Wait..." : "Upload Hero Image"}
           </button>
         </div>
+
         <div className="mt-10 bg-white p-6 shadow-sm">
           <h2 className="font-heading text-2xl text-coffee">Our Story / Brand Image</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -408,7 +410,7 @@ export default function Admin() {
             <img
               src={aboutImage}
               alt="Current Our Story image"
-              className="mt-5 aspect-[4/5] max-h-80 w-auto object-cover"
+              className="mt-5 max-w-full h-auto object-contain"
             />
           )}
 
@@ -467,6 +469,7 @@ export default function Admin() {
             {loading ? "Please Wait..." : "Save Social Links"}
           </button>
         </div>
+
         <div className="mt-8 bg-white p-6 shadow-sm">
           <h2 className="font-heading text-2xl text-coffee">Product Image Management</h2>
 
@@ -512,7 +515,11 @@ export default function Admin() {
             return (
               <div key={product.id} className="bg-white p-4">
                 {imageSrc ? (
-                  <img src={imageSrc} alt={product.name} className="aspect-[4/5] w-full object-cover" />
+                  <img
+                    src={imageSrc}
+                    alt={product.name}
+                    className="w-full h-auto object-contain"
+                  />
                 ) : (
                   <div className="flex aspect-[4/5] items-center justify-center bg-sandstone text-center text-xs uppercase tracking-widest text-ochre">
                     No image
@@ -527,5 +534,3 @@ export default function Admin() {
     </div>
   );
 }
-
-

@@ -1,4 +1,4 @@
-import { Image } from "@/components/ui/image";
+
 import { API_URL } from "@/api/api";
 
 export default function PlaceholderImage({
@@ -6,7 +6,6 @@ export default function PlaceholderImage({
   label = "[UPLOAD REAL IMAGE]",
   aspect = "aspect-[4/5]",
   className = "",
-  fittingType = "fit",
 }) {
   const imageSrc = src
     ? src.startsWith("http")
@@ -16,12 +15,11 @@ export default function PlaceholderImage({
 
   if (imageSrc) {
     return (
-      <div className={`relative w-full overflow-hidden ${aspect} ${className}`}>
-        <Image
+      <div className={`relative w-full ${className}`}>
+        <img
           src={imageSrc}
           alt={label}
-          className="w-full h-full object-contain"
-          fittingType="fit"
+          className="block w-full h-auto"
         />
       </div>
     );
