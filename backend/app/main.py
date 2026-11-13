@@ -28,6 +28,8 @@ app.add_middleware(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://g-glams-naturals.vercel.app",
+        "https://www.g-glamsnatural.store",
+        "https://g-glamsnatural.store",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -59,6 +61,7 @@ def health():
         "status": "healthy",
         "environment": "development",
     }
+
 
 
 
